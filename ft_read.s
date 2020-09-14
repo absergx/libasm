@@ -1,14 +1,18 @@
-; **************************************************************************** ;
-;                                                                              ;
-;                                                         :::      ::::::::    ;
-;    ft_read.s                                          :+:      :+:    :+:    ;
-;                                                     +:+ +:+         +:+      ;
-;    By: memilio <memilio@student.42.fr>            +#+  +:+       +#+         ;
-;                                                 +#+#+#+#+#+   +#+            ;
-;    Created: 2020/09/02 00:34:17 by memilio           #+#    #+#              ;
-;    Updated: 2020/09/02 00:36:47 by memilio          ###   ########.fr        ;
-;                                                                              ;
-; **************************************************************************** ;
-
 section .text
 global _ft_read
+extern __error
+
+_ft_read:
+		xor rax, rax
+read:
+		mov rax, 0x2000003
+		syscall
+		jc err
+		ret
+err:
+		push rax
+		call __error
+		pop rdx
+		mov [rax], edx
+		mov rax, -1
+		ret

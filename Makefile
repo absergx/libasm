@@ -6,7 +6,7 @@
 #    By: memilio <memilio@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/09/01 23:56:12 by memilio           #+#    #+#              #
-#    Updated: 2020/09/02 00:35:14 by memilio          ###   ########.fr        #
+#    Updated: 2020/09/14 15:39:52 by memilio          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ FLAGS = -Wall -Werror -Wextra
 LIBC = ar rcs
 
 .s.o:
-	nasm -f macho64 -o $@ $<
+	@nasm -f macho64 -o $@ $<
 
 $(NAME): ${OBJS}
 	@${LIBC} $(NAME) $(OBJS)
@@ -32,7 +32,7 @@ $(NAME): ${OBJS}
 all: $(NAME)
 
 bonus: $(NAME) $(OBJS_BONUS)
-	${LIBC} $(NAME) $(OBJS_BONUS)
+	@${LIBC} $(NAME) $(OBJS_BONUS)
 
 clean:
 	/bin/rm -f $(OBJS) $(OBJS_BONUS)
