@@ -6,47 +6,47 @@
 /*   By: memilio <memilio@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/02 00:03:10 by memilio           #+#    #+#             */
-/*   Updated: 2020/09/14 23:19:42 by memilio          ###   ########.fr       */
+/*   Updated: 2020/09/15 12:35:07 by memilio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <errno.h>
+#include "libasm.h"
 
 #define OK printf("\033[38;5;46m[OK]\033[0m\t")
 #define KO printf("\033[38;5;160m[KO]\033[0m\t")
 
-ssize_t		ft_strlen(char const *str);
-char		*ft_strcpy(char *dst, const char *src);
-int			ft_strcmp(char *s1, char *s2);
-ssize_t		ft_write(int fd, const void *buf, size_t count);
-ssize_t		ft_read(int fd, void *buf, size_t count);
-char		*ft_strdup(const char *s);
-
-static void	write_test(int fd, char *buf, size_t size)
+static void	write_test(char *filename)
 {
+	int		ft_fd;
+	int		or_fd;
 	int		ft;
 	int		or;
 	int		ft_errno;
 	int		or_errno;
+	char	*buf;
 
-	or = write(fd, buf, size);
+	buf = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tristique dui at tellus blandit vulputate.";
+	or_fd = open(filename, O_RDWR);
+	or = write(or_fd, buf, 63);
 	or_errno = errno;
-	ft = ft_write(fd, buf, size);
+	if (or_fd > 0)
+		close(or_fd);
+	ft_fd = open(filename, O_RDWR);
+	ft = ft_write(ft_fd, buf, 63);
 	ft_errno = errno;
+	if (ft_fd > 0)
+		close(ft_fd);
 	(or == ft) ? OK : KO;
 	if (ft == -1 || or == -1)
 		(ft_errno == or_errno) ? OK : KO;
 }
 
-static void	read_test(int fd, size_t size)
+static void	read_test(char *filename)
 {
+	int		or_fd;
+	int		ft_fd;
 	int		or;
 	int		ft;
 	int		or_errno;
@@ -56,16 +56,22 @@ static void	read_test(int fd, size_t size)
 
 	bzero(ft_buf, 256);
 	bzero(or_buf, 256);
-	ft = ft_read(fd, ft_buf, size);
-	ft_errno = errno;
-	or = read(fd, or_buf, size);
+	or_fd = open(filename, O_RDONLY);
+	or = read(or_fd, or_buf, 255);
 	or_errno = errno;
+	if (or_fd > 0)
+		close(or_fd);
+	ft_fd = open(filename, O_RDONLY);
+	ft = ft_read(ft_fd, ft_buf, 255);
+	ft_errno = errno;
+	if (ft_fd > 0)
+		close(ft_fd);
 	(or == ft && !strcmp(or_buf, ft_buf)) ? OK : KO;
 	if (ft == -1 || or == -1)
 		(ft_errno == or_errno) ? OK : KO;
 }
 
-static void	strdup_test(const char *str, const char *cmp)
+static void	strdup_test(const char *str)
 {
 	char	*or;
 	char	*ft;
@@ -73,7 +79,6 @@ static void	strdup_test(const char *str, const char *cmp)
 	or = strdup(str);
 	ft = ft_strdup(str);
 	(!strcmp(or, ft)) ? OK : KO;
-	
 }
 
 static void	strcmp_test(char *s1, char *s2)
@@ -120,7 +125,6 @@ int			main(void)
 	strlen_test("111+}Te'st!wi/th*[<<As:c2ii3");
 	printf("\n");
 	printf("FT_STRCPY:\t");
-	strcpy_test("Hello world");
 	strcpy_test("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tristique dui at tellus blandit vulputate.");
 	strcpy_test("");
 	strcpy_test("\n");
@@ -135,6 +139,28 @@ int			main(void)
 	strcmp_test("111+}Te'st!wi/th*[<<As:c2ii3", "111+}Te'st!wi/th*[<<As:c2ii");
 	strcmp_test("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tristique dui at tellus blandit vulputate.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tristique dui at tellus blandit vulputate.");
 	strcmp_test("FIZZ\0BUZZ", "FIZZ\0");
+	printf("\n");
+	printf("FT_STRDUP:\t");
+	strdup_test("FIZZ\0BUZZ");
+	strdup_test("Hello world");
+	strdup_test("");
+	strdup_test("\x12\xff");
+	strdup_test("\n\n");
+	strdup_test("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tristique dui at tellus blandit vulputate.");
+	printf("\n");
+	printf("FT_READ:\t");
+	read_test("test1.txt");
+	read_test("test2.txt");
+	read_test("not_valid");
+	int fd = open("test3.txt", O_CREAT, 0000);
+	close(fd);
+	read_test("test3.txt");
+	printf("\n");
+	printf("FT_WRITE:\t");
+	write_test("test1.txt");
+	write_test("test2.txt");
+	write_test("test3.txt");
+	write_test("not_valid");
 	printf("\n");
 	return (0);
 }

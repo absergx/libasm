@@ -1,6 +1,6 @@
 section .text
 global _ft_read
-extern __error
+extern ___error
 
 _ft_read:
 		xor rax, rax
@@ -11,7 +11,7 @@ read:
 		ret
 err:
 		push rax
-		call __error
+		call ___error
 		pop rdx
 		mov [rax], edx
 		mov rax, -1

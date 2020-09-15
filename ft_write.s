@@ -1,8 +1,8 @@
 section .text
 global _ft_write
-extern __error
+extern ___error
 
-_ft_read:
+_ft_write:
 		xor rax, rax
 write:
 		mov rax, 0x2000004
@@ -11,7 +11,7 @@ write:
 		ret
 err:
 		push rax
-		call __error
+		call ___error
 		pop rdx
 		mov [rax], edx
 		mov rax, -1
