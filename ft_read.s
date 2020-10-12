@@ -5,8 +5,8 @@
 ;                                                     +:+ +:+         +:+      ;
 ;    By: memilio <memilio@student.42.fr>            +#+  +:+       +#+         ;
 ;                                                 +#+#+#+#+#+   +#+            ;
-;    Created: 2020/09/15 11:25:09 by memilio           #+#    #+#              ;
-;    Updated: 2020/09/17 12:25:43 by memilio          ###   ########.fr        ;
+;    Created: 2020/10/12 15:04:30 by memilio           #+#    #+#              ;
+;    Updated: 2020/10/12 15:06:25 by memilio          ###   ########.fr        ;
 ;                                                                              ;
 ; **************************************************************************** ;
 
@@ -25,6 +25,6 @@ err:
 		push rax
 		call ___error
 		pop rdx
-		mov [rax], edx
+		mov [rax], rdx
 		mov rax, -1
 		ret
